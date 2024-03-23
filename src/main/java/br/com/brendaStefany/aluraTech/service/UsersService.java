@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +31,8 @@ public class UsersService {
             if (existingUserByUsername.isPresent()) {
                 throw new IllegalStateException("User with this username already exists.");
             }
+
+            user.setCreation_date(LocalDateTime.now());
 
             Users savedUser = usersRepository.save(user);
             return new UsersDTO(savedUser);
