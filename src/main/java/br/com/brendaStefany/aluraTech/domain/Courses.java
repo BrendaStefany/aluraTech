@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,5 +43,9 @@ public class Courses {
     private LocalDateTime created_at;
 
     private LocalDateTime inactive_at;
+
+    @OneToMany(mappedBy = "register_course", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("register_course")
+    private List<Registrations> registration_course;
 
 }

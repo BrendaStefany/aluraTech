@@ -50,4 +50,8 @@ public class Users {
     @JsonIgnoreProperties("instructor_username")
     private List<Courses> courses;
 
+    @OneToMany(mappedBy = "register_user", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("register_user")
+    private List<Registrations> registration_user;
+
 }

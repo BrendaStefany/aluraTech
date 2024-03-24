@@ -78,4 +78,8 @@ public class CoursesService {
         return new PageImpl<>(coursesDTOList, paginacao, coursesPage.getTotalElements());
     }
 
+    public Optional<CoursesStatus> findStatusByCode(String code){
+        return coursesRepository.findStatusByCode(code);
+    }
+
 }
