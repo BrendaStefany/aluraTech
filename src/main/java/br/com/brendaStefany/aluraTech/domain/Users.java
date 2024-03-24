@@ -1,5 +1,6 @@
 package br.com.brendaStefany.aluraTech.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,5 +45,9 @@ public class Users {
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creation_date;
+
+    @OneToMany(mappedBy = "instructor_username", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("instructor_username")
+    private List<Courses> courses;
 
 }
