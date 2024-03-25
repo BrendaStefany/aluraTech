@@ -3,6 +3,8 @@ package br.com.brendaStefany.aluraTech.service;
 import br.com.brendaStefany.aluraTech.domain.Courses;
 import br.com.brendaStefany.aluraTech.domain.CoursesStatus;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
+import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundDTO;
+import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundListPageDTO;
 import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
 import br.com.brendaStefany.aluraTech.repository.CoursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +29,22 @@ public class CoursesService {
     @Autowired
     UsersService usersService;
 
-    public CoursesDTO addNewCourse(Courses course) {
+    public CoursesOutboundDTO addNewCourse(Courses course) {
         try {
             Optional<Courses> existingCourseByCode = coursesRepository.findByCode(course.getCode());
             if (existingCourseByCode.isPresent()) {
                 throw new IllegalStateException("Course with this code already exists.");
             }
 
-            UsersDTO instructor = usersService.findUserByUsername(course.getInstructor_username().getUsername());
+            UsersDTO instructor = usersService.findUserByUsernameDTO(course.getInstructor_username().getUsername());
             if (instructor == null) {
                 throw new NoSuchElementException("Instructor not found with username: " + course.getInstructor_username().getUsername());
             }
 
             course.setStatus(CoursesStatus.ACTIVE);
-            course.setCreated_at(LocalDateTime.now());
 
             Courses savedCourse = coursesRepository.save(course);
-            return new CoursesDTO("Course created with successfully!!", savedCourse);
+            return new CoursesOutboundDTO(savedCourse,"Course created with successfully!!" );
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         } catch (NoSuchElementException ex) {
@@ -56,6 +57,10 @@ public class CoursesService {
         try {
             Courses course = coursesRepository.findByCode(code)
                     .orElseThrow(() -> new IllegalStateException("Course not found with code: " + code));
+
+            if(course.getStatus() == CoursesStatus.INACTIVE)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The course is already inactive.");
+
             course.setStatus(CoursesStatus.INACTIVE);
             course.setInactive_at(LocalDateTime.now());
             coursesRepository.save(course);
@@ -64,7 +69,7 @@ public class CoursesService {
         }
     }
 
-    public Page<CoursesDTO.CoursesData> findCourses(String status, Pageable paginacao) {
+    public Page<CoursesOutboundListPageDTO.CoursesDataOutboundList> findCourses(String status, Pageable paginacao) {
         Page<Courses> coursesPage;
         if (status != null && !status.isEmpty()) {
             CoursesStatus coursesStatus = CoursesStatus.valueOf(status.toUpperCase());
@@ -73,13 +78,21 @@ public class CoursesService {
             coursesPage = coursesRepository.findAll(paginacao);
         }
 
-        CoursesDTO coursesDTO = new CoursesDTO(coursesPage);
-        List<CoursesDTO.CoursesData> coursesDTOList = coursesDTO.getDataList();
-        return new PageImpl<>(coursesDTOList, paginacao, coursesPage.getTotalElements());
+        return coursesPage.map(course -> new CoursesOutboundListPageDTO.CoursesDataOutboundList(course));
     }
 
     public Optional<CoursesStatus> findStatusByCode(String code){
         return coursesRepository.findStatusByCode(code);
+    }
+
+    public Courses findByCode(String code) {
+        return coursesRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado para o código: " + code));
+    }
+
+    public CoursesDTO findByCodeDTO(String code) {
+        Courses courses = findByCode(code);
+        return new CoursesDTO(courses);
     }
 
 }

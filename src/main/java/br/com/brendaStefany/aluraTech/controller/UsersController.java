@@ -2,6 +2,7 @@ package br.com.brendaStefany.aluraTech.controller;
 
 import br.com.brendaStefany.aluraTech.domain.Users;
 import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
+import br.com.brendaStefany.aluraTech.dto.users.UsersOutboundDTO;
 import br.com.brendaStefany.aluraTech.dto.users.UsersWithUsernameDTO;
 import br.com.brendaStefany.aluraTech.service.UsersService;
 import jakarta.validation.Valid;
@@ -20,18 +21,14 @@ public class UsersController {
     UsersService usersService;
 
     @PostMapping()
-    public ResponseEntity<UsersDTO> addNewUser(@RequestBody @Valid Users user){
-        UsersDTO userDTO = usersService.addNewUser(user);
-        return new ResponseEntity<>(userDTO,HttpStatus.CREATED);
+    public ResponseEntity<UsersOutboundDTO> addNewUser(@RequestBody @Valid Users user){
+        UsersOutboundDTO usersOutboundDTO = usersService.addNewUser(user);
+        return new ResponseEntity<>(usersOutboundDTO,HttpStatus.CREATED);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
-        UsersDTO userDTO = usersService.findUserByUsername(username);
-        if (userDTO == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Username '" + username + "' não encontrado");
-        }
+        UsersDTO userDTO = usersService.findUserByUsernameDTO(username);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 

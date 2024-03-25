@@ -1,10 +1,15 @@
 package br.com.brendaStefany.aluraTech.domain;
 
 
+import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
+import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -12,22 +17,21 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "registrations")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Registrations {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @EmbeddedId
+    private RegisterId id;
 
-    @ManyToOne
-    @JoinColumn(name = "register_user", referencedColumnName = "username", nullable = false)
-    @JsonIgnoreProperties("registration_user")
-    private Users register_user;
+    @CreationTimestamp
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "register_course", referencedColumnName = "code", nullable = false)
-    @JsonIgnoreProperties("registration_course")
-    private Courses register_course;
 
-    private LocalDateTime registration_date;
-
+    public Registrations(Users users, Courses courses) {
+        this.setId(new RegisterId(
+                users,courses
+        ));
+    }
 }

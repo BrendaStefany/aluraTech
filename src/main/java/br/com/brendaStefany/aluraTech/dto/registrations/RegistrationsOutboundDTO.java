@@ -1,7 +1,10 @@
 package br.com.brendaStefany.aluraTech.dto.registrations;
 
 import br.com.brendaStefany.aluraTech.domain.Registrations;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -9,17 +12,17 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationsDTO {
+public class RegistrationsOutboundDTO {
 
     private String message;
     private RegistrationData data;
 
-    public RegistrationsDTO(String message, Registrations savedUser) {
+    public RegistrationsOutboundDTO(String message, Registrations savedRegister) {
         this.message = message;
         this.data = new RegistrationData();
-        this.data.setUser(savedUser.getRegister_user().getUsername());
-        this.data.setCourse(savedUser.getRegister_course().getCode());
-        this.data.setRegistration_date(savedUser.getRegistration_date());
+        this.data.setUser(savedRegister.getId().getUser().getUsername());
+        this.data.setCourse(savedRegister.getId().getCourse().getCode());
+        this.data.setRegistration_date(savedRegister.getId().getUser().getCreation_date());
     }
 
     @Getter

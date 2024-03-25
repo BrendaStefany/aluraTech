@@ -2,6 +2,8 @@ package br.com.brendaStefany.aluraTech.controller;
 
 import br.com.brendaStefany.aluraTech.domain.Courses;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
+import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundDTO;
+import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundListPageDTO;
 import br.com.brendaStefany.aluraTech.service.CoursesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,8 @@ public class CoursesController {
     CoursesService coursesService;
 
     @PostMapping()
-    public ResponseEntity<CoursesDTO> addNewCourse(@RequestBody @Valid Courses course){
-        CoursesDTO courseDTO = coursesService.addNewCourse(course);
+    public ResponseEntity<CoursesOutboundDTO> addNewCourse(@RequestBody @Valid Courses course){
+        CoursesOutboundDTO courseDTO = coursesService.addNewCourse(course);
         return new ResponseEntity<>(courseDTO, HttpStatus.CREATED);
     }
 
@@ -34,10 +36,10 @@ public class CoursesController {
     }
 
     @GetMapping()
-        public Page<CoursesDTO.CoursesData> getCourses(@RequestParam(required = false) String status,
-                                                   @RequestParam(required = false) String fieldOrder,
-                                                   @RequestParam(required = false) String order, @RequestParam(required = false) Integer page,
-                                                   @RequestParam(required = false) Integer size) {
+    public Page<CoursesOutboundListPageDTO.CoursesDataOutboundList> getCourses(@RequestParam(required = false) String status,
+                                               @RequestParam(required = false) String fieldOrder,
+                                               @RequestParam(required = false) String order, @RequestParam(required = false) Integer page,
+                                               @RequestParam(required = false) Integer size) {
 
         if (fieldOrder == null)
             fieldOrder = "name";
@@ -45,7 +47,7 @@ public class CoursesController {
         this.createOrdering(fieldOrder, order);
         Pageable pagination = createPagination(page, size, ordering);
 
-        Page<CoursesDTO.CoursesData> coursesPage = coursesService.findCourses(status, pagination);
+        Page<CoursesOutboundListPageDTO.CoursesDataOutboundList> coursesPage = coursesService.findCourses(status, pagination);
 
        return coursesPage;
     }

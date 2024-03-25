@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +44,7 @@ public class Users {
     @Column(nullable = false)
     private String role;
 
+    @CreationTimestamp
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime creation_date;
 
@@ -50,8 +52,7 @@ public class Users {
     @JsonIgnoreProperties("instructor_username")
     private List<Courses> courses;
 
-    @OneToMany(mappedBy = "register_user", cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("register_user")
-    private List<Registrations> registration_user;
+    @OneToMany(mappedBy = "id.user", cascade = CascadeType.REMOVE)
+    private List<Registrations> registers;
 
 }

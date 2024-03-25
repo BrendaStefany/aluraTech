@@ -6,16 +6,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "courses")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "courses")
 public class Courses {
 
     @Id
@@ -40,12 +41,17 @@ public class Courses {
     @Enumerated(EnumType.STRING)
     private CoursesStatus status;
 
+    @CreationTimestamp
     private LocalDateTime created_at;
 
     private LocalDateTime inactive_at;
 
-    @OneToMany(mappedBy = "register_course", cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("register_course")
-    private List<Registrations> registration_course;
+    @OneToMany(mappedBy = "id.course", cascade = CascadeType.REMOVE)
+    private List<Registrations> registers;
+
+    public String getStatusDescription(String status) {
+        CoursesStatus coursesStatus = CoursesStatus.valueOf(status.toUpperCase());
+        return coursesStatus == CoursesStatus.ACTIVE ? "Ativo" : "Inativo";
+    }
 
 }

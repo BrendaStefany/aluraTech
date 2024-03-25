@@ -1,7 +1,7 @@
 package br.com.brendaStefany.aluraTech.controller;
 
-import br.com.brendaStefany.aluraTech.domain.Registrations;
-import br.com.brendaStefany.aluraTech.dto.registrations.RegistrationsDTO;
+import br.com.brendaStefany.aluraTech.dto.registrations.RegistrationsInboundDTO;
+import br.com.brendaStefany.aluraTech.dto.registrations.RegistrationsOutboundDTO;
 import br.com.brendaStefany.aluraTech.service.RegistrationsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,8 @@ public class RegistrationsController {
     RegistrationsService registrationsService;
 
     @PostMapping()
-    public ResponseEntity<RegistrationsDTO> addNewRegister(@RequestBody @Valid Registrations register){
-        RegistrationsDTO registerDTO = registrationsService.addNewRegister(register);
+    public ResponseEntity<RegistrationsOutboundDTO> addNewRegister(@RequestBody @Valid RegistrationsInboundDTO register){
+        RegistrationsOutboundDTO registerDTO = registrationsService.addNewRegister(register);
         return new ResponseEntity<>(registerDTO, HttpStatus.CREATED);
     }
 

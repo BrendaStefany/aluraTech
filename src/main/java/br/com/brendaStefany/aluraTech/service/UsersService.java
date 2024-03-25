@@ -2,6 +2,7 @@ package br.com.brendaStefany.aluraTech.service;
 
 import br.com.brendaStefany.aluraTech.domain.Users;
 import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
+import br.com.brendaStefany.aluraTech.dto.users.UsersOutboundDTO;
 import br.com.brendaStefany.aluraTech.dto.users.UsersWithUsernameDTO;
 import br.com.brendaStefany.aluraTech.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class UsersService {
     @Autowired
     UsersRepository usersRepository;
 
-    public UsersDTO addNewUser(Users user) {
+    public UsersOutboundDTO addNewUser(Users user) {
         try {
             Optional<Users> existingUserByEmail = usersRepository.findByEmail(user.getEmail());
             if (existingUserByEmail.isPresent()) {
@@ -32,18 +33,22 @@ public class UsersService {
                 throw new IllegalStateException("User with this username already exists.");
             }
 
-            user.setCreation_date(LocalDateTime.now());
-
             Users savedUser = usersRepository.save(user);
-            return new UsersDTO(savedUser);
+            return new UsersOutboundDTO("User created with successfully!!",savedUser);
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 
-    public UsersDTO findUserByUsername(String username){
-        Optional<Users> existingUserByUsername = usersRepository.findByUsername(username);
-        return existingUserByUsername.map(UsersDTO::new).orElse(null);
+    public Users findUserByUsername(String username) {
+        Optional<Users> optionalUser = usersRepository.findByUsername(username);
+        return optionalUser.orElse(null);
+    }
+
+    public UsersDTO findUserByUsernameDTO(String username){
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found for username: " + username));
+        return new UsersDTO(user);
     }
 
     public List<UsersWithUsernameDTO> findAllUsers(){
