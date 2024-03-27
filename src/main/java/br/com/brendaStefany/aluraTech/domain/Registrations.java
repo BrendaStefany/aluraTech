@@ -1,9 +1,5 @@
 package br.com.brendaStefany.aluraTech.domain;
 
-
-import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
-import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

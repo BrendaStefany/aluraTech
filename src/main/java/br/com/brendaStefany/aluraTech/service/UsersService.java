@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,11 +37,6 @@ public class UsersService {
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
-    }
-
-    public Users findUserByUsername(String username) {
-        Optional<Users> optionalUser = usersRepository.findByUsername(username);
-        return optionalUser.orElse(null);
     }
 
     public UsersDTO findUserByUsernameDTO(String username){

@@ -2,21 +2,18 @@ package br.com.brendaStefany.aluraTech.service;
 
 import br.com.brendaStefany.aluraTech.domain.Courses;
 import br.com.brendaStefany.aluraTech.domain.CoursesStatus;
-import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundDTO;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundListPageDTO;
 import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
 import br.com.brendaStefany.aluraTech.repository.CoursesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -81,18 +78,9 @@ public class CoursesService {
         return coursesPage.map(course -> new CoursesOutboundListPageDTO.CoursesDataOutboundList(course));
     }
 
-    public Optional<CoursesStatus> findStatusByCode(String code){
-        return coursesRepository.findStatusByCode(code);
-    }
-
     public Courses findByCode(String code) {
         return coursesRepository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado para o código: " + code));
-    }
-
-    public CoursesDTO findByCodeDTO(String code) {
-        Courses courses = findByCode(code);
-        return new CoursesDTO(courses);
+                .orElseThrow(() -> new RuntimeException("Course not found for code: " + code));
     }
 
 }

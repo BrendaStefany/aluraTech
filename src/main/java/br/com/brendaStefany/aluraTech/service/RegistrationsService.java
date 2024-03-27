@@ -21,9 +21,6 @@ public class RegistrationsService {
     @Autowired
     CoursesService coursesService;
 
-    @Autowired
-    UsersService usersService;
-
     public RegistrationsOutboundDTO addNewRegister(@Validated RegistrationsInboundDTO register) {
         try {
             Optional<Registrations> existingRegisterByUserAndCourse = registrationsRepository.findById(new RegisterId(register.getUsers(), register.getCourses()));
@@ -32,10 +29,12 @@ public class RegistrationsService {
                         "' and course '" + register.getCourses().getCode() + "'");
             }
 
-            Users user = usersService.findUserByUsername(register.getUsers().getUsername());
-            Courses course = coursesService.findByCode(register.getCourses().getCode());
+            Courses courses = coursesService.findByCode(register.getCourses().getCode());
+            if(courses.getStatus() == CoursesStatus.INACTIVE)
+                throw new IllegalStateException("Cannot register for an inactive course.");
 
-            Registrations newRegistration = new Registrations(user, course);
+
+            Registrations newRegistration = new Registrations(register.getUsers(), register.getCourses());
             newRegistration = registrationsRepository.save(newRegistration);
 
             return new RegistrationsOutboundDTO("Successfully registered!", newRegistration);
@@ -44,4 +43,7 @@ public class RegistrationsService {
         }
     }
 
+    public Optional<Registrations> findById(Users users, Courses courses) {
+        return registrationsRepository.findById(new RegisterId(users, courses));
+    }
 }

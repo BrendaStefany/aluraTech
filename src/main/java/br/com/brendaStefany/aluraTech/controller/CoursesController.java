@@ -1,10 +1,10 @@
 package br.com.brendaStefany.aluraTech.controller;
 
 import br.com.brendaStefany.aluraTech.domain.Courses;
-import br.com.brendaStefany.aluraTech.dto.courses.CoursesDTO;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundDTO;
 import br.com.brendaStefany.aluraTech.dto.courses.CoursesOutboundListPageDTO;
 import br.com.brendaStefany.aluraTech.service.CoursesService;
+import br.com.brendaStefany.aluraTech.service.NpsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

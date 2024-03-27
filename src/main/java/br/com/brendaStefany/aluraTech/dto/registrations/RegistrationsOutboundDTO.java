@@ -22,7 +22,7 @@ public class RegistrationsOutboundDTO {
         this.data = new RegistrationData();
         this.data.setUser(savedRegister.getId().getUser().getUsername());
         this.data.setCourse(savedRegister.getId().getCourse().getCode());
-        this.data.setRegistration_date(savedRegister.getId().getUser().getCreation_date());
+        this.data.setRegistration_date(savedRegister.getRegistrationDate());
     }
 
     @Getter

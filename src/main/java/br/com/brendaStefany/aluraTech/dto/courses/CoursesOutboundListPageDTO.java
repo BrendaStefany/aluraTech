@@ -2,14 +2,10 @@ package br.com.brendaStefany.aluraTech.dto.courses;
 
 import br.com.brendaStefany.aluraTech.domain.Courses;
 import br.com.brendaStefany.aluraTech.dto.users.UsersDTO;
-import br.com.brendaStefany.aluraTech.dto.users.UsersWithUsernameDTO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
