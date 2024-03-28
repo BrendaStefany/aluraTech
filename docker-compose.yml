@@ -3,6 +3,7 @@ version: '3.1'
 services:
   db:
     image: mysql:8.0.31
+    container_name: db
     volumes:
       - dbbase:/var/lib/mysql
     ports:
@@ -10,11 +11,30 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: alura1234
       MYSQL_DATABASE: alura_tech
+    networks:
+      - alura-network
 
-  phpmyadmin:
-    image: phpmyadmin
+  app:
+    build:
+      context: .
+    image: alura-tech
+    container_name: alura-tech
+    links:
+      - db
+    depends_on:
+      - db
+    expose:
+      - "8080"
     ports:
-      - 8000:80
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+    networks:
+      - alura-network
 
 volumes:
   dbbase:
+networks:
+  alura-network:
+    driver: bridge
