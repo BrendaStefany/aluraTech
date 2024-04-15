@@ -2,22 +2,22 @@ package br.com.brendaStefany.aluraTech.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users implements UserDetails {
 
     @Id
     @NotBlank
@@ -36,8 +36,7 @@ public class Users {
     private String email;
 
     @NotBlank(message = "Password is required.")
-    @Size(min = 3, max = 10, message = "Password must be between 3 and 10 characters.")
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @NotBlank(message = "Role is required.")
@@ -55,4 +54,28 @@ public class Users {
     @OneToMany(mappedBy = "id.user", cascade = CascadeType.REMOVE)
     private List<Registrations> registers;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

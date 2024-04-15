@@ -7,6 +7,7 @@ import br.com.brendaStefany.aluraTech.dto.users.UsersWithUsernameDTO;
 import br.com.brendaStefany.aluraTech.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,6 +21,8 @@ public class UsersService {
     @Autowired
     UsersRepository usersRepository;
 
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public UsersOutboundDTO addNewUser(Users user) {
         try {
             Optional<Users> existingUserByEmail = usersRepository.findByEmail(user.getEmail());
@@ -30,6 +33,14 @@ public class UsersService {
             Optional<Users> existingUserByUsername = usersRepository.findByUsername(user.getUsername());
             if (existingUserByUsername.isPresent()) {
                 throw new IllegalStateException("User with this username already exists.");
+            }
+
+
+            if (user.getPassword().length() <= 10) {
+                String encryptedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encryptedPassword);
+            } else {
+                throw new RuntimeException("The password must be a maximum of 10 characters.");
             }
 
             Users savedUser = usersRepository.save(user);
